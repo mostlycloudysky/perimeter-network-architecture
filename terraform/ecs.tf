@@ -2,6 +2,11 @@ resource "aws_ecs_cluster" "app_cluster" {
   name = "app-cluster"
 }
 
+resource "aws_cloudwatch_log_group" "ecs_log_group" {
+  name              = "/ecs/app"
+  retention_in_days = 7
+}
+
 resource "aws_ecs_task_definition" "app_task" {
   family                   = "app-task"
   network_mode             = "awsvpc"
@@ -9,6 +14,7 @@ resource "aws_ecs_task_definition" "app_task" {
   cpu                      = "256"
   memory                   = "512"
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn            = aws_iam_role.ecs_task_execution_role.arn
 
   container_definitions = jsonencode([
     {
@@ -20,6 +26,20 @@ resource "aws_ecs_task_definition" "app_task" {
           hostPort      = 80
         }
       ]
+      environment = [
+        {
+          name  = "DATABASE_URL"
+          value = "postgresql://dbadmin:supersecurepassword@app-db.czzl6us7f3mh.us-east-1.rds.amazonaws.com:5432/app_db"
+        }
+      ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = "/ecs/app"
+          awslogs-region        = "us-east-1"
+          awslogs-stream-prefix = "ecs"
+        }
+      }
     }
   ])
 }
