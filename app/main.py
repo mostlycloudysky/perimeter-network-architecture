@@ -17,6 +17,11 @@ def get_db():
         db.close()
 
 
+@app.get("/")
+def read_root():
+    return {"message": "Hello from FastAPI in a DMZ-like setup!"}
+
+
 @app.post("/items/", response_model=schemas.Item)
 def create_item(item: schemas.ItemCreate, db: Session = Depends(get_db)):
     try:
