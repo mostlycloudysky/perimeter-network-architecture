@@ -26,6 +26,12 @@ resource "aws_ecs_task_definition" "app_task" {
           hostPort      = 80
         }
       ]
+      environment = [
+        {
+          name  = "DATABASE_URL"
+          value = "postgresql://dbadmin:supersecurepassword@app-db.czzl6us7f3mh.us-east-1.rds.amazonaws.com:5432/app_db"
+        }
+      ]
       logConfiguration = {
         logDriver = "awslogs"
         options = {
