@@ -29,7 +29,7 @@ resource "aws_ecs_task_definition" "app_task" {
       environment = [
         {
           name  = "DATABASE_URL"
-          value = "postgresql://dbadmin:supersecurepassword@app-db.czzl6us7f3mh.us-east-1.rds.amazonaws.com:5432/app_db"
+          value = "postgresql://dbadmin:supersecurepassword@app-db.czzl6us7f3mh.us-east-1.rds.amazonaws.com:5432/app_db" # Reference only and should be secured in terraform workspace env. 
         }
       ]
       logConfiguration = {
